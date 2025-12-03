@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apresentação - Estrutura Analítica do Projeto (EAP)</title>
+    <title>Kickoff - Inteligência Comercial</title>
     <style>
         * {
             margin: 0;
@@ -13,113 +13,310 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1e3c72;
             overflow: hidden;
-        }
-
-        .presentation {
-            width: 100vw;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
         .slide {
             display: none;
-            width: 100%;
-            height: 100%;
-            padding: 40px 60px;
-            animation: slideIn 0.5s ease-in-out;
+            width: 100vw;
+            height: 100vh;
+            padding: 50px 70px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .slide.active {
             display: flex;
             flex-direction: column;
+            animation: fadeIn 0.5s;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        /* Estilizar a scrollbar */
+        .slide::-webkit-scrollbar {
+            width: 10px;
         }
 
-        /* Slide de Título */
-        .slide-title {
+        .slide::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* CAPA */
+        #slide1 {
             justify-content: center;
             align-items: center;
             text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        #slide1 h1 {
             color: white;
+            font-size: 3.2em;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.3);
         }
 
-        .slide-title h1 {
-            font-size: 3.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        #slide1 .subtitle {
+            color: white;
+            font-size: 1.6em;
+            margin-top: 20px;
+            opacity: 0.95;
         }
 
-        .slide-title p {
-            font-size: 1.5em;
-            opacity: 0.9;
+        #slide1 .badge {
+            background: rgba(255,255,255,0.25);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            color: white;
+            margin-top: 40px;
+            display: inline-block;
         }
 
-        /* Slide de Conteúdo */
-        .slide-content {
+        /* SLIDES DE CONTEÚDO */
+        .content-slide {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
+            padding: 35px 45px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .slide-content h2 {
+        .content-slide h2 {
             color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 15px;
+            font-size: 2em;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
         }
 
-        /* Container para a EAP (texto/exemplo) */
-        .eap-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            overflow: hidden;
-            background: #f0f4f8;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: left;
-        }
-
-        .eap-container h3 {
-            color: #764ba2;
+        .content-slide p {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #333;
             margin-bottom: 15px;
         }
 
-        .eap-list {
+        .content-slide h3 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin: 18px 0 12px 0;
+        }
+
+        /* BULLETS */
+        ul.bullets {
             list-style: none;
-            width: 80%;
+            padding: 0;
+            margin: 12px 0;
         }
 
-        .eap-list li {
-            background: white;
-            padding: 10px 15px;
+        ul.bullets li {
+            padding: 10px 15px 10px 40px;
             margin: 8px 0;
-            border-left: 5px solid #667eea;
-            border-radius: 5px;
-            font-size: 1.1em;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e0e7ef 100%);
+            border-radius: 8px;
+            font-size: 0.92em;
+            line-height: 1.5;
+            position: relative;
         }
 
-        /* Navegação */
-        .navigation {
+        ul.bullets li::before {
+            content: "●";
+            position: absolute;
+            left: 18px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        ul.bullets li strong {
+            color: #764ba2;
+        }
+
+        /* QUOTE */
+        .quote {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            font-style: italic;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.05em;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* PILARES */
+        .pillars {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .pillar {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .pillar h4 {
+            color: #667eea;
+            font-size: 1.05em;
+            margin-bottom: 8px;
+        }
+
+        .pillar p {
+            font-size: 0.88em;
+            color: #555;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* TABELA */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px;
+            font-size: 1.1em;
+            text-align: left;
+        }
+
+        table td {
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.92em;
+            line-height: 1.4;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        table td:first-child {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        table td:last-child {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .card h4 {
+            font-size: 1.15em;
+            margin-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 0.92em;
+            color: white;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* EAP */
+        .eap-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .eap-box img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Ajuste específico para o slide 6 - EAP FULLSCREEN */
+        #slide6 {
+            padding: 30px;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #slide6 .eap-box {
+            width: calc(100vw - 60px);
+            height: calc(100vh - 60px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #slide6 .eap-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* NAVEGAÇÃO */
+        .nav {
             position: fixed;
             bottom: 30px;
             right: 30px;
@@ -128,35 +325,35 @@
             z-index: 1000;
         }
 
-        .nav-btn {
+        .nav button {
             background: white;
             border: none;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
+            font-size: 22px;
             cursor: pointer;
-            font-size: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            color: #667eea;
+            font-weight: bold;
+            transition: all 0.3s;
         }
 
-        .nav-btn:hover {
+        .nav button:hover:not(:disabled) {
             transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: #667eea;
+            color: white;
         }
 
-        .nav-btn:disabled {
+        .nav button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
 
-        /* Indicador de slides */
-        .slide-indicator {
+        /* INDICADORES */
+        .indicators {
             position: fixed;
-            bottom: 30px;
+            bottom: 35px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -164,154 +361,241 @@
             z-index: 1000;
         }
 
-        .indicator-dot {
+        .dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
             background: rgba(255,255,255,0.4);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
-        .indicator-dot.active {
+        .dot.active {
             background: white;
-            width: 30px;
+            width: 32px;
             border-radius: 6px;
         }
 
-        /* Lista de conteúdo */
-        .content-list {
-            list-style: none;
-            padding: 20px 0;
-        }
-
-        .content-list li {
-            padding: 15px;
-            margin: 10px 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 10px;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .content-list li::before {
-            content: "✓";
-            background: #667eea;
+        /* CONTADOR */
+        .counter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0,0,0,0.3);
             color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <div class="presentation">
-        <div class="slide slide-title active">
-            <h1>📊 Estrutura Analítica do Projeto</h1>
-            <p>Apresentação da EAP - Work Breakdown Structure</p>
-        </div>
+    <!-- SLIDE 1: CAPA -->
+    <div id="slide1" class="slide active">
+        <h1>🚀 Kickoff do Projeto<br>Inteligência Comercial<br>e Precificação</h1>
+        <div class="subtitle">Transformando dados em oportunidades de negócio</div>
+        <div class="badge">📅 Reunião de Kickoff</div>
+    </div>
 
-        <div class="slide slide-content">
-            <h2>O que é uma EAP?</h2>
-            <ul class="content-list">
-                <li>**Estrutura hierárquica** de decomposição do trabalho</li>
-                <li>Organiza e define o **escopo total** do projeto</li>
-                <li>Facilita o **planejamento e controle** das entregas</li>
-                <li>Base para estimativas de tempo e custo</li>
-            </ul>
+    <!-- SLIDE 2: CONTEXTO -->
+    <div id="slide2" class="slide content-slide">
+        <h2>📊 Cenário Atual e Motivadores da Mudança</h2>
+        <p>Atualmente, nossa operação comercial enfrenta desafios que impactam diretamente nossa taxa de conversão e aproveitamento de oportunidades. Identificamos que a "perda de oportunidades" ocorre não por falta de capacidade técnica, mas por lacunas no processo de identificação, classificação e precificação ágil.</p>
+        
+        <h3>Pontos-Chave:</h3>
+        <ul class="bullets">
+            <li><strong>Fragmentação de Processos:</strong> Hoje, operamos com fluxos distintos e muitas vezes desconectados, gerando gaps intersetoriais e retrabalho.</li>
+            <li><strong>Reatividade x Proatividade:</strong> Nossa inteligência de precificação e captação muitas vezes reage ao edital ou à demanda, em vez de antecipar o mercado com dados estruturados.</li>
+            <li><strong>Visão Segmentada:</strong> Com a expansão para múltiplos canais (B2G, B2B), a falta de uma gestão unificada de pipeline dificulta a visão global de receita e a alocação eficiente de recursos.</li>
+            <li><strong>Risco na Precificação:</strong> A ausência de uma base de dados histórica consolidada e de uma matriz de risco formalizada torna a precificação vulnerável.</li>
+        </ul>
+        
+        <div class="quote">
+            "Precisamos evoluir de uma operação focada em 'responder demandas' para uma estrutura focada em 'converter oportunidades com inteligência'."
         </div>
+    </div>
 
-        <div class="slide slide-content">
-            <h2>Estrutura Analítica do Projeto (EAP)</h2>
-            <p>A EAP decompõe o projeto em pacotes de trabalho gerenciáveis:</p>
-            <div class="eap-container">
-                <h3>Exemplo de Estrutura Principal:</h3>
-                <ul class="eap-list">
-                    <li>**1.0 Projeto de Inteligência Comercial**</li>
-                    <li>&nbsp;&nbsp;&nbsp;&nbsp;1.1 Fase de Descoberta e Análise</li>
-                    <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.1.1 Levantamento de Requisitos (Sprints)</li>
-                    <li>&nbsp;&nbsp;&nbsp;&nbsp;1.2 Desenvolvimento da Plataforma (CRM/Dashboards)</li>
-                    <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.1 Configuração de Funil Unificado</li>
-                    <li>&nbsp;&nbsp;&nbsp;&nbsp;1.3 Implementação do Modelo de Precificação</li>
-                    <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.3.1 Criação da Matriz de Risco</li>
-                </ul>
-                <p style="margin-top: 15px; font-size: 0.9em; color: #555;">(Se a imagem estivesse presente, ela entraria aqui.)</p>
+    <!-- SLIDE 3: OBJETIVO -->
+    <div id="slide3" class="slide content-slide">
+        <h2>🎯 Objetivo Geral do Projeto</h2>
+        <p><strong>Estruturar e implementar um Ecossistema de Inteligência Comercial e Precificação</strong>, unificando as frentes de Licitações (B2G) e Vendas Privadas (B2B). O foco é transformar dados dispersos em inteligência competitiva para captar, qualificar, precificar e converter negócios com máxima assertividade e segurança.</p>
+        
+        <h3>Pilares do Objetivo:</h3>
+        <div class="pillars">
+            <div class="pillar">
+                <h4>1. Centralização</h4>
+                <p>Unificar a gestão de oportunidades em um único funil (CRM), independente da origem (Público ou Privado).</p>
+            </div>
+            <div class="pillar">
+                <h4>2. Inteligência de Precificação</h4>
+                <p>Implementar modelos de precificação baseados em dados históricos e de mercado, com cenários de margem flexíveis (A, B, C) e análise de risco estruturada.</p>
+            </div>
+            <div class="pillar">
+                <h4>3. Eficiência Operacional</h4>
+                <p>Eliminar gargalos manuais e gaps de comunicação entre áreas (Comercial, Técnico, Financeiro) através de processos definidos e automação.</p>
+            </div>
+            <div class="pillar">
+                <h4>4. Cultura de Dados</h4>
+                <p>Estabelecer uma gestão orientada a indicadores (KPIs de Conversão, Win/Loss), onde cada decisão de "Go/No-Go" é baseada em critérios objetivos (ICP e Score).</p>
             </div>
         </div>
+    </div>
 
-        <div class="slide slide-content">
-            <h2>Próximos Passos</h2>
-            <ul class="content-list">
-                <li>**Validação** da estrutura com stakeholders</li>
-                <li>Definição de **responsáveis** por pacote de trabalho</li>
-                <li>**Estimativa** de recursos e cronograma</li>
-                <li>**Acompanhamento e controle** da execução</li>
-            </ul>
+    <!-- SLIDE 4: O QUE MUDA -->
+    <div id="slide4" class="slide content-slide">
+        <h2>🔄 O que Muda? Visão de Futuro</h2>
+        <p>Um comparativo rápido para alinhar expectativas:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>❌ DE (Cenário Atual)</th>
+                    <th>✅ PARA (Cenário Futuro)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Processos manuais e descentralizados</td>
+                    <td>Fluxo automatizado e centralizado em CRM</td>
+                </tr>
+                <tr>
+                    <td>Precificação baseada em estimativa pontual</td>
+                    <td>Precificação baseada em dados históricos e inteligência de mercado</td>
+                </tr>
+                <tr>
+                    <td>Foco reativo em Editais publicados</td>
+                    <td>Atuação preditiva e relacionamento pré-venda (B2G/B2B)</td>
+                </tr>
+                <tr>
+                    <td>Gestão de risco intuitiva/informal</td>
+                    <td>Matriz de Risco e Scoring de oportunidades formalizados</td>
+                </tr>
+                <tr>
+                    <td>Silos entre Licitação e Vendas Privadas</td>
+                    <td><strong>Uma única Máquina de Vendas Integrada</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 5: BENEFÍCIOS -->
+    <div id="slide5" class="slide content-slide">
+        <h2>💎 Benefícios Esperados</h2>
+        <p>Por que esse projeto vale o esforço de todos:</p>
+        
+        <div class="cards">
+            <div class="card">
+                <h4>📈 Aumento da Taxa de Conversão</h4>
+                <p>Focar energia nas oportunidades certas (ICP validado).</p>
+            </div>
+            <div class="card">
+                <h4>🛡️ Segurança na Margem</h4>
+                <p>Vender com a certeza de que o preço cobre os riscos mapeados.</p>
+            </div>
+            <div class="card">
+                <h4>⚡ Agilidade na Resposta</h4>
+                <p>Redução do tempo entre a identificação da oportunidade e o envio da proposta.</p>
+            </div>
+            <div class="card">
+                <h4>📊 Visibilidade Gerencial</h4>
+                <p>Dashboards em tempo real de todo o pipeline de receita da empresa.</p>
+            </div>
         </div>
     </div>
 
-    <div class="navigation">
-        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">←</button>
-        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">→</button>
+    <!-- SLIDE 6: EAP FULLSCREEN -->
+    <div id="slide6" class="slide">
+        <div class="eap-box">
+            <img src="EAP[031].png" alt="EAP" onerror="this.style.display='none'; this.parentElement.style.backgroundImage='url(EAP[031].png)'; this.parentElement.style.backgroundSize='contain'; this.parentElement.style.backgroundPosition='center'; this.parentElement.style.backgroundRepeat='no-repeat';">
+        </div>
     </div>
 
-    <div class="slide-indicator" id="indicator"></div>
+    <!-- SLIDE 7: PRÓXIMOS PASSOS -->
+    <div id="slide7" class="slide content-slide">
+        <h2>🚀 Vamos Começar!</h2>
+        <h3>Próximos Passos:</h3>
+        <ul class="bullets">
+            <li><strong>Alinhamento de Expectativas:</strong> Confirmar escopo, prazos e responsabilidades com todos os stakeholders.</li>
+            <li><strong>Formação do Time:</strong> Definir papéis e responsáveis por cada frente do projeto.</li>
+            <li><strong>Kick-off das Sprints:</strong> Iniciar a primeira sprint de descoberta e levantamento de requisitos.</li>
+            <li><strong>Comunicação Contínua:</strong> Estabelecer rituais de alinhamento (dailies, weeklies, reviews).</li>
+            <li><strong>Quick Wins:</strong> Identificar entregas rápidas para gerar momentum e engajamento.</li>
+        </ul>
+        
+        <div class="quote">
+            "Vamos juntos construir a máquina de vendas mais inteligente e eficiente da empresa! 💪"
+        </div>
+    </div>
+
+    <!-- NAVEGAÇÃO -->
+    <div class="nav">
+        <button onclick="prev()">←</button>
+        <button onclick="next()">→</button>
+    </div>
+
+    <!-- INDICADORES -->
+    <div class="indicators" id="dots"></div>
+
+    <!-- CONTADOR -->
+    <div class="counter" id="counter">1 / 7</div>
 
     <script>
-        let currentSlide = 0;
+        let current = 0;
+        const total = 7;
         const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
 
-        // Criar indicadores
-        const indicator = document.getElementById('indicator');
-        for (let i = 0; i < totalSlides; i++) {
+        // Criar dots
+        const dotsDiv = document.getElementById('dots');
+        for (let i = 0; i < total; i++) {
             const dot = document.createElement('div');
-            dot.className = 'indicator-dot';
-            if (i === 0) dot.classList.add('active');
-            dot.onclick = () => goToSlide(i);
-            indicator.appendChild(dot);
+            dot.className = 'dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goTo(i);
+            dotsDiv.appendChild(dot);
         }
 
-        function showSlide(n) {
-            slides.forEach(slide => slide.classList.remove('active'));
+        function show(n) {
+            slides.forEach(s => s.classList.remove('active'));
             slides[n].classList.add('active');
-
-            // Atualizar indicadores
-            document.querySelectorAll('.indicator-dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === n);
+            
+            // Scroll para o topo ao trocar de slide
+            slides[n].scrollTop = 0;
+            
+            document.querySelectorAll('.dot').forEach((d, i) => {
+                d.classList.toggle('active', i === n);
             });
-
-            // Atualizar botões
-            document.getElementById('prevBtn').disabled = n === 0;
-            document.getElementById('nextBtn').disabled = n === totalSlides - 1;
+            
+            document.getElementById('counter').textContent = `${n + 1} / ${total}`;
+            
+            document.querySelector('.nav button:first-child').disabled = n === 0;
+            document.querySelector('.nav button:last-child').disabled = n === total - 1;
         }
 
-        function changeSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide < 0) currentSlide = 0;
-            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
-            showSlide(currentSlide);
+        function next() {
+            if (current < total - 1) {
+                current++;
+                show(current);
+            }
         }
 
-        function goToSlide(n) {
-            currentSlide = n;
-            showSlide(currentSlide);
+        function prev() {
+            if (current > 0) {
+                current--;
+                show(current);
+            }
         }
 
-        // Navegação por teclado
+        function goTo(n) {
+            current = n;
+            show(current);
+        }
+
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') changeSlide(-1);
-            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowRight') next();
+            if (e.key === 'ArrowLeft') prev();
         });
 
-        // Inicializar
-        showSlide(0);
+        show(0);
     </script>
 </body>
 </html>
