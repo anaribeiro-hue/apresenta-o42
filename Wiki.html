@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki de Conhecimento - Editável</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #003cff 0%, #00009b 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Botão Admin */
+        .admin-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #003cff;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .admin-toggle:hover {
+            background: #00009b;
+            transform: scale(1.05);
+        }
+
+        /* Modal de Edição */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #003cff;
+        }
+
+        .modal-header h2 {
+            color: #003cff;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2em;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+        }
+
+        .close-modal:hover {
+            color: #003cff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #003cff;
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #003cff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #00009b;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: #00009b;
+        }
+
+        .wiki-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .wiki-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .wiki-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+            gap: 5px;
+        }
+
+        .wiki-card:hover .card-actions {
+            display: flex;
+        }
+
+        .card-action-btn {
+            background: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .card-action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .card-action-btn.edit {
+            color: #003cff;
+        }
+
+        .card-action-btn.delete {
+            color: #d32f2f;
+        }
+
+        .wiki-card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .wiki-card h3 {
+            color: #00009b;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .wiki-card p {
+            color: #4c4c4c;
+            margin-bottom: 15px;
+        }
+
+        .wiki-card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .wiki-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .wiki-content.active {
+            display: block;
+        }
+
+        .wiki-content h2 {
+            color: #00009b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #8e8e8e;
+        }
+
+        .wiki-content h3 {
+            color: #003cff;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .wiki-content ul, .wiki-content ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .wiki-content li {
+            margin-bottom: 8px;
+        }
+
+        .wiki-content code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .wiki-content pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+
+        .back-button {
+            background: #003cff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #00009b;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #003cff;
+            text-decoration: none;
+        }   
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e8eaf6;
+            color: #2196f3;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #00009b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .wiki-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-toggle {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 20px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📚 Wiki - Produtos</h1>
+            <p>Base de conhecimento colaborativa</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Barra de Pesquisa -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Pesquisar artigos, tutoriais, documentação...">
+        </div>
+
+        <!-- Grid de Cards -->
+        <div id="wikiGrid" class="wiki-grid"></div>
+
+        <!-- Conteúdo do Artigo -->
+        <div id="articleContent" class="wiki-content"></div>
+    </div>
+
+    <!-- Botão Admin -->
+    <button class="admin-toggle" onclick="openAddModal()">➕ Adicionar Artigo</button>
+
+    <!-- Modal de Edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Novo Artigo</h2>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            
+            <form id="articleForm">
+                <input type="hidden" id="articleId">
+                
+                <div class="form-group">
+                    <label for="articleIcon">Ícone (Emoji)</label>
+                    <input type="text" id="articleIcon" placeholder="💻" required maxlength="2">
+                </div>
+
+                <div class="form-group">
+                    <label for="articleTitle">Título</label>
+                    <input type="text" id="articleTitle" placeholder="Ex: Introdução ao HTML" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="articleDescription">Descrição Breve</label>
+                    <textarea id="articleDescription" placeholder="Descrição que aparece no card..." rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="articleTags">Tags (separadas por vírgula)</label>
+                    <input type="text" id="articleTags" placeholder="Web, Iniciante, Tutorial">
+                </div>
+
+                <div class="form-group">
+                    <label for="articleContent">Conteúdo Completo</label>
+                    <textarea id="articleContent" placeholder="Escreva o conteúdo completo do artigo aqui. Você pode usar HTML básico como <h3>, <p>, <ul>, <li>, <code>, <pre>, etc." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Artigo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Wiki de Conhecimento. Desenvolvido com ❤️</p>
+        <p>Última atualização: <span id="lastUpdate"></span></p>
+    </footer>
+
+    <script>
+        // Banco de dados local (localStorage)
+        let articles = [];
+        let currentArticleId = null;
+
+        // Inicializar
+        function init() {
+            loadArticles();
+            renderGrid();
+            updateLastUpdate();
+            
+            // Event listener para busca
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            
+            // Event listener para form
+            document.getElementById('articleForm').addEventListener('submit', handleFormSubmit);
+        }
+
+        // Carregar artigos do localStorage
+        function loadArticles() {
+            const stored = localStorage.getItem('wikiArticles');
+            if (stored) {
+                articles = JSON.parse(stored);
+            } else {
+                // Artigos de exemplo iniciais
+                articles = [
+                    {
+                        id: 1,
+                        icon: '💻',
+                        title: 'Introdução ao HTML',
+                        description: 'Aprenda os fundamentos da linguagem de marcação mais importante da web.',
+                        tags: ['Web', 'Iniciante'],
+                        content: `<h3>O que é HTML?</h3>
+<p>HTML (HyperText Markup Language) é a linguagem de marcação padrão para criar páginas web.</p>
+
+<h3>Estrutura Básica</h3>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Minha Página&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Olá, Mundo!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<h3>Principais Tags</h3>
+<ul>
+    <li><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code> - Cabeçalhos</li>
+    <li><code>&lt;p&gt;</code> - Parágrafo</li>
+    <li><code>&lt;a&gt;</code> - Link</li>
+    <li><code>&lt;img&gt;</code> - Imagem</li>
+</ul>`,
+                        date: new Date().toLocaleDateString('pt-BR'),
+                        views: 1200
+                    },
+                    {
+                        id: 2,
+                        icon: '🎨',
+                        title: 'Guia de CSS',
+                        description: 'Domine a estilização de páginas web com CSS moderno e responsivo.',
+                        tags: ['Design', 'Intermediário'],
+                        content: `<h3>O que é CSS?</h3>
+<p>CSS (Cascading Style Sheets) é a linguagem usada para estilizar páginas web.</p>
+
+<h3>Seletores Básicos</h3>
+<pre>/* Elemento */
+p { color: blue; }
+
+/* Classe */
+.destaque { background: yellow; }
+
+/* ID */
+#cabecalho { font-size: 24px; }</pre>
+
+<h3>Propriedades Mais Usadas</h3>
+<ul>
+    <li><code>color</code> - Cor do texto</li>
+    <li><code>background-color</code> - Cor de fundo</li>
+    <li><code>margin</code> - Margem externa</li>
+    <li><code>padding</code> - Espaçamento interno</li>
+</ul>`,
+                        date: new Date().toLocaleDateString('pt-BR'),
+                        views: 980
+                    }
+                ];
+                saveArticles();
+            }
+        }
+
+        // Salvar artigos no localStorage
+        function saveArticles() {
+            localStorage.setItem('wikiArticles', JSON.stringify(articles));
+            updateLastUpdate();
+        }
+
+        // Atualizar data de última atualização
+        function updateLastUpdate() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleString('pt-BR');
+        }
+
+        // Renderizar grid de cards
+        function renderGrid() {
+            const grid = document.getElementById('wikiGrid');
+            
+            if (articles.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>Nenhum artigo ainda</h3>
+                        <p>Clique em "Adicionar Artigo" para criar o primeiro!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = articles.map(article => `
+                <div class="wiki-card" onclick="showArticle(${article.id})">
+                    <div class="card-actions">
+                        <button class="card-action-btn edit" onclick="event.stopPropagation(); editArticle(${article.id})" title="Editar">✏️</button>
+                        <button class="card-action-btn delete" onclick="event.stopPropagation(); deleteArticle(${article.id})" title="Excluir">🗑️</button>
+                    </div>
+                    <div class="wiki-card-icon">${article.icon}</div>
+                    <h3>${article.title}</h3>
+                    <p>${article.description}</p>
+                    <div>
+                        ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="wiki-card-meta">
+                        <span>📅 ${article.date}</span>
+                        <span>👁️ ${article.views} visualizações</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Mostrar artigo completo
+        function showArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+
+            // Incrementar visualizações
+            article.views++;
+            saveArticles();
+
+            const grid = document.getElementById('wikiGrid');
+            const content = document.getElementById('articleContent');
+
+            grid.style.display = 'none';
+            content.classList.add('active');
+
+            content.innerHTML = `
+                <div class="breadcrumb">
+                    <a href="#" onclick="showGrid(); return false;">Início</a> / ${article.title}
+                </div>
+                <button class="back-button" onclick="showGrid()">← Voltar</button>
+                
+                <h2>${article.icon} ${article.title}</h2>
+                <div class="wiki-card-meta" style="margin-bottom: 20px;">
+                    <span>📅 ${article.date}</span>
+                    <span>👁️ ${article.views} visualizações</span>
+                </div>
+                <div>
+                    ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+                <hr style="margin: 20px 0;">
+                ${article.content}
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        // Voltar para o grid
+        function showGrid() {
+            document.getElementById('wikiGrid').style.display = 'grid';
+            document.getElementById('articleContent').classList.remove('active');
+            renderGrid(); // Atualizar visualizações
+            window.scrollTo(0, 0);
+        }
+
+        // Abrir modal para adicionar
+        function openAddModal() {
+            currentArticleId = null;
+            document.getElementById('modalTitle').textContent = 'Novo Artigo';
+            document.getElementById('articleForm').reset();
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        // Editar artigo
+        function editArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+
+            currentArticleId = id;
+            document.getElementById('modalTitle').textContent = 'Editar Artigo';
+            document.getElementById('articleId').value = id;
+            document.getElementById('articleIcon').value = article.icon;
+            document.getElementById('articleTitle').value = article.title;
+            document.getElementById('articleDescription').value = article.description;
+            document.getElementById('articleTags').value = article.tags.join(', ');
+            document.getElementById('articleContent').value = article.content;
+            
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        // Excluir artigo
+        function deleteArticle(id) {
+            if (!confirm('Tem certeza que deseja excluir este artigo?')) return;
+
+            articles = articles.filter(a => a.id !== id);
+            saveArticles();
+            renderGrid();
+        }
+
+        // Fechar modal
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            document.getElementById('articleForm').reset();
+            currentArticleId = null;
+        }
+
+        // Submeter formulário
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const icon = document.getElementById('articleIcon').value;
+            const title = document.getElementById('articleTitle').value;
+            const description = document.getElementById('articleDescription').value;
+            const tags = document.getElementById('articleTags').value.split(',').map(t => t.trim()).filter(t => t);
+            const content = document.getElementById('articleContent').value;
+
+            if (currentArticleId) {
+                // Editar existente
+                const article = articles.find(a => a.id === currentArticleId);
+                if (article) {
+                    article.icon = icon;
+                    article.title = title;
+                    article.description = description;
+                    article.tags = tags;
+                    article.content = content;
+                    article.date = new Date().toLocaleDateString('pt-BR');
+                }
+            } else {
+                // Criar novo
+                const newArticle = {
+                    id: Date.now(),
+                    icon,
+                    title,
+                    description,
+                    tags,
+                    content,
+                    date: new Date().toLocaleDateString('pt-BR'),
+                    views: 0
+                };
+                articles.push(newArticle);
+            }
+
+            saveArticles();
+            renderGrid();
+            closeModal();
+
+            alert('Artigo salvo com sucesso!');
+        }
+
+        // Busca
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.wiki-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Inicializar quando carregar
+        window.addEventListener('load', init);
+
+        // Fechar modal ao clicar fora
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
